@@ -18,26 +18,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @JsonTest
-public class EntryJsonTest {
+public class JournalEntryJsonTest {
 
     @Autowired
-    private JacksonTester<Entry> json;
+    private JacksonTester<JournalEntry> json;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
     public void accountSerializationTest() throws IOException {
-        Entry entry = new Entry(14L, "Withdrawal", LocalDateTime.of(2023, 4, 17, 8, 35, 3, 123456789), "-100.00", "500");
+        JournalEntry journalEntry = new JournalEntry(14L, "Withdrawal", LocalDateTime.of(2023, 4, 17, 8, 35, 3, 123456789), "-100.00", "500");
 //		assertThat(json.write(entry)).isStrictlyEqualToJson("expected-entry.json");
-        assertThat(json.write(entry)).hasJsonPathNumberValue("@.id");
-        assertThat(json.write(entry)).extractingJsonPathNumberValue("@.id").isEqualTo(14);
-        assertThat(json.write(entry)).hasJsonPathStringValue("@.description");
-        assertThat(json.write(entry)).extractingJsonPathStringValue("@.description").isEqualTo("Withdrawal");
+        assertThat(json.write(journalEntry)).hasJsonPathNumberValue("@.id");
+        assertThat(json.write(journalEntry)).extractingJsonPathNumberValue("@.id").isEqualTo(14);
+        assertThat(json.write(journalEntry)).hasJsonPathStringValue("@.description");
+        assertThat(json.write(journalEntry)).extractingJsonPathStringValue("@.description").isEqualTo("Withdrawal");
 
-        assertThat(json.write(entry)).hasJsonPathStringValue("@.amount");
+        assertThat(json.write(journalEntry)).hasJsonPathStringValue("@.amount");
 
-        JsonContent<Entry> jsonContent = json.write(entry);
+        JsonContent<JournalEntry> jsonContent = json.write(journalEntry);
         String jsonContentStr = jsonContent.getJson();
         JsonNode node = objectMapper.readValue(jsonContentStr, JsonNode.class);
         JsonNode amountNode = node.get("amount");
@@ -46,7 +46,7 @@ public class EntryJsonTest {
         BigDecimal comparingAmount = new BigDecimal("-100.00");
         assert amountBD.equals(comparingAmount);
 
-        assertThat(json.write(entry)).hasJsonPathStringValue("@.balance");
+        assertThat(json.write(journalEntry)).hasJsonPathStringValue("@.balance");
         JsonNode balanceNode = node.get("balance");
         String balanceStr = balanceNode.textValue();
         BigDecimal balanceBD = new BigDecimal(balanceStr);
