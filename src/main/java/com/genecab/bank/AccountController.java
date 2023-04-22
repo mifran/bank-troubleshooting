@@ -12,6 +12,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
+    private AccountRepository accountRepository;
+    public AccountController(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
     @GetMapping("/{requestedId}")
     public ResponseEntity<Account> findById(@PathVariable Long requestedId) throws JsonProcessingException {
 

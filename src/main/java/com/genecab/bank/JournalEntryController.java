@@ -19,6 +19,12 @@ public class JournalEntryController {
     @Autowired
     ObjectMapper objectMapper;
 
+    private JournalEntryRepository journalEntryRepository;
+
+    public JournalEntryController(JournalEntryRepository journalEntryRepository) {
+        this.journalEntryRepository = journalEntryRepository;
+    }
+
     @GetMapping("/{requestedId}")
     public ResponseEntity<String> findById(@PathVariable Long requestedId) throws JsonProcessingException {
 
