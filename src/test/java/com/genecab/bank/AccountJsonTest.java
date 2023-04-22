@@ -20,7 +20,7 @@ public class AccountJsonTest {
 
 	@Test
 	public void accountSerializationTest() throws IOException {
-		Account account = new Account(1001L, "Aiden", AccountType.SAVINGS);
+		Account account = new Account(1001L, "Aiden", "SAVINGS");
 		assertThat(json.write(account)).isStrictlyEqualToJson("expected-account.json");
 		assertThat(json.write(account)).hasJsonPathNumberValue("@.id");
 		assertThat(json.write(account)).extractingJsonPathNumberValue("@.id").isEqualTo(1001);
@@ -28,7 +28,7 @@ public class AccountJsonTest {
 		assertThat(json.write(account)).extractingJsonPathStringValue("@.name").isEqualTo("Aiden");
 		assertThat(json.write(account)).hasJsonPathStringValue("@.type");
 		assertThat(json.write(account)).extractingJsonPathStringValue("@.type")
-			.isEqualTo(AccountType.SAVINGS.name());
+			.isEqualTo("SAVINGS");
 	}
 
 }

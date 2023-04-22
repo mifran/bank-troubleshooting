@@ -1,5 +1,7 @@
 package com.genecab.bank;
 
-public record Account(Long id, String name, AccountType type) {
+import org.springframework.data.annotation.Id;
+
+public record Account(@Id Long id, String name, String type) {
 
 }

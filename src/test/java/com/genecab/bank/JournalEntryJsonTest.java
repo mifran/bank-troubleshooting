@@ -12,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,8 +29,8 @@ public class JournalEntryJsonTest {
 
     @Test
     public void accountSerializationTest() throws IOException {
-        JournalEntry journalEntry = new JournalEntry(14L, "Withdrawal", LocalDateTime.of(2023, 4, 17, 8, 35, 3, 123456789), "-100.00", "500");
-//		assertThat(json.write(entry)).isStrictlyEqualToJson("expected-entry.json");
+
+        JournalEntry journalEntry = new JournalEntry(14L, "Withdrawal", Instant.now().toEpochMilli(), "-100.00", "500");
         assertThat(json.write(journalEntry)).hasJsonPathNumberValue("@.id");
         assertThat(json.write(journalEntry)).extractingJsonPathNumberValue("@.id").isEqualTo(14);
         assertThat(json.write(journalEntry)).hasJsonPathStringValue("@.description");
