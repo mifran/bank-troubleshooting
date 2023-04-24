@@ -39,13 +39,13 @@ class BankApplicationTests {
 
     @Test
     void shouldReturnAJournalEntryWhenDataIsSaved() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries/14", String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries/13892", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         Number id = documentContext.read("$.id");
-        assertThat(id).isEqualTo(14);
+        assertThat(id).isEqualTo(13892);
         assertThat(id).isNotNull();
     }
 
