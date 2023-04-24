@@ -18,7 +18,7 @@ public class AccountController {
     }
     @GetMapping("/{requestedId}")
     public ResponseEntity<Account> findById(@PathVariable Long requestedId) throws JsonProcessingException {
-        Optional<Account> accountOptional = accountRepository.findById(1001L);
+        Optional<Account> accountOptional = accountRepository.findById(requestedId);
 
         if (accountOptional.isPresent()) {
             return ResponseEntity.ok(accountOptional.get());
