@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.net.URI;
+import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BankApplicationTests {
@@ -76,5 +77,32 @@ class BankApplicationTests {
         assertThat(id).isNotNull();
         assertThat(name.trim()).isEqualTo("John Savings");
         assertThat(type.trim()).isEqualTo("SAVINGS");
+    }
+
+    @Test
+    void shouldCreateANewJournalEntry() {
+        JournalEntry newJournalEntry = new JournalEntry(null, 1001L, "Deposit", 1682675287000L, "150.00", null);
+        ResponseEntity<Void> createResponse = restTemplate.postForEntity("/journal-entries", newJournalEntry, Void.class);
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        URI locationOfNewAccount = createResponse.getHeaders().getLocation();
+        ResponseEntity<String> getResponse = restTemplate.getForEntity(locationOfNewAccount, String.class);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
+        Number id = documentContext.read("$.id");
+        Number account = documentContext.read("$.account");
+        String description = documentContext.read("$.description");
+        Number instant = documentContext.read("$.instant");
+        String amount = documentContext.read("$.amount");
+        Optional<String> balanceOpt = Optional.of(documentContext.read("$.balance"));
+        String balance = Optional.ofNullable(balanceOpt).map(Optional::get).orElse("").trim();
+
+        assertThat(id).isNotNull();
+        assertThat(account).isEqualTo(1001);
+        assertThat(description.trim()).isEqualTo("Deposit");
+        assertThat(instant).isEqualTo(1682675287000L);
+        assertThat(amount.trim()).isEqualTo("150.00");
+        assertThat(balance).isEqualTo("250.00");
     }
 }

@@ -29,7 +29,7 @@ public class JournalEntryJsonTest {
     @Test
     public void journalEntrySerializationTest() throws IOException {
 
-        JournalEntry journalEntry = new JournalEntry(14L, "Withdrawal", Instant.now().toEpochMilli(), "-100.00", "500");
+        JournalEntry journalEntry = new JournalEntry(14L,1001L, "Withdrawal", Instant.now().toEpochMilli(), "-100.00", "500");
         assertThat(json.write(journalEntry)).hasJsonPathNumberValue("@.id");
         assertThat(json.write(journalEntry)).extractingJsonPathNumberValue("@.id").isEqualTo(14);
         assertThat(json.write(journalEntry)).hasJsonPathStringValue("@.description");
