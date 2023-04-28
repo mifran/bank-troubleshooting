@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import java.net.URI;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BankApplicationTests {
@@ -55,5 +56,25 @@ class BankApplicationTests {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isBlank();
+    }
+
+    @Test
+    void shouldCreateANewAccount() {
+        Account newAccount = new Account(null, "John Savings", "SAVINGS");
+        ResponseEntity<Void> createResponse = restTemplate.postForEntity("/accounts", newAccount, Void.class);
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        URI locationOfNewAccount = createResponse.getHeaders().getLocation();
+        ResponseEntity<String> getResponse = restTemplate.getForEntity(locationOfNewAccount, String.class);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
+        Number id = documentContext.read("$.id");
+        String name = documentContext.read("$.name");
+        String type = documentContext.read("$.type");
+
+        assertThat(id).isNotNull();
+        assertThat(name.trim()).isEqualTo("John Savings");
+        assertThat(type.trim()).isEqualTo("SAVINGS");
     }
 }
