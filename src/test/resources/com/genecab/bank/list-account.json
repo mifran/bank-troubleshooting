@@ -1,0 +1,37 @@
+[
+	{
+		"id": 1001,
+		"name": "Jeremy",
+		"type": "SAVINGS"
+	},
+	{
+		"id": 1001,
+		"name": "Jeremy",
+		"type": "SAVINGS"
+	},
+	{
+		"id": 1002,
+		"name": "Emma",
+		"type": "SAVINGS"
+	},
+	{
+		"id": 1003,
+		"name": "Sally",
+		"type": "SAVINGS"
+	},
+	{
+		"id": 1004,
+		"name": "John",
+		"type": "SAVINGS"
+	},
+	{
+		"id": 1005,
+		"name": "Jeremy",
+		"type": "MONEY_MARKET"
+	},
+	{
+		"id": 1006,
+		"name": "Jeremy",
+		"type": "CHECKING"
+	}
+]

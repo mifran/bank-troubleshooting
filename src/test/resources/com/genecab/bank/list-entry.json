@@ -1,0 +1,38 @@
+[
+	{
+		"id": 13892,
+		"description": "Beginning Balance",
+		"amount": 0.00,
+		"balance": 100.00
+	},
+	{
+		"id": 13893,
+		"description": "Beginning Balance",
+		"amount": 0.00,
+		"balance": 0.00
+	},
+	{
+		"id": 13894,
+		"description": "Deposit",
+		"amount": 125.00,
+		"balance": 125.00
+	},
+	{
+		"id": 13895,
+		"description": "Withdrawal",
+		"amount": -20.00,
+		"balance": 105.00
+	},
+	{
+		"id": 13896,
+		"description": "Deposit",
+		"amount": 80.00,
+		"balance": 185.00
+	},
+	{
+		"id": 13897,
+		"description": "Interest payment",
+		"amount": 1.00,
+		"balance": 186.00
+	}
+]
