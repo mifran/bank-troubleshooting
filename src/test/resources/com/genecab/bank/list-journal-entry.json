@@ -1,0 +1,50 @@
+[
+	{
+		"id": 13892,
+		"account": 1001,
+		"description": "Beginning Balance",
+		"instant": 16765,
+		"amount": "0.0",
+		"balance": "100.0"
+	},
+	{
+		"id": 13893,
+		"account": 1002,
+		"description": "Beginning Balance",
+		"instant": 16765,
+		"amount": "0.0",
+		"balance": "0.0"
+	},
+	{
+		"id": 13894,
+		"account": 1002,
+		"description": "Deposit",
+		"instant": 16765,
+		"amount": "125.0",
+		"balance": "125.0"
+	},
+	{
+		"id": 13895,
+		"account": 1002,
+		"description": "Withdrawal",
+		"instant": 16765,
+		"amount": "-20.0",
+		"balance": "105.0"
+	},
+	{
+		"id": 13896,
+		"account": 1002,
+		"description": "Deposit",
+		"instant": 16765,
+		"amount": "80.0",
+		"balance": "185.0"
+	},
+	{
+		"id": 13897,
+		"account": 1002,
+		"description": "Interest payment",
+		"instant": 16765,
+		"amount": "1.0",
+		"balance": "186.0"
+	}
+]
