@@ -68,7 +68,8 @@ public class JournalEntryController {
         Page<JournalEntry> page = journalEntryRepository.findAll(
                 PageRequest.of(
                         pageable.getPageNumber(),
-                        pageable.getPageSize()
+                        pageable.getPageSize(),
+                        pageable.getSort()
                 ));
         return ResponseEntity.ok(page.getContent());
     }

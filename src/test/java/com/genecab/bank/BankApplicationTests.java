@@ -130,8 +130,8 @@ class BankApplicationTests {
                 "Emma                                                                                                ",
                 "Sally                                                                                               ",
                 "John                                                                                                ",
-                "Jeremy                                                                                              ",
-                "Jeremy                                                                                              "
+                "Emma                                                                                                ",
+                "Emma                                                                                                "
         );
 
         JSONArray types = documentContext.read("$..type");
@@ -193,5 +193,34 @@ class BankApplicationTests {
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         JSONArray page = documentContext.read("$[*]");
         assertThat(page.size()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldReturnASortedPageOfAccounts() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/accounts?page=0&size=1&sort=name,type", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        JSONArray read = documentContext.read("$[*]");
+        assertThat(read.size()).isEqualTo(1);
+
+        String name = documentContext.read("$[0].name");
+        assertThat(name).isEqualTo("Emma                                                                                                ");
+
+        String type = documentContext.read("$[0].type");
+        assertThat(type).isEqualTo("CHECKING                                          ");
+    }
+
+    @Test
+    void shouldReturnASortedPageOfJournalEntries() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries?page=0&size=1&sort=id,desc", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        JSONArray read = documentContext.read("$[*]");
+        assertThat(read.size()).isEqualTo(1);
+
+        int id = documentContext.read("$[0].id");
+        assertThat(id).isEqualTo(13897);
     }
 }
