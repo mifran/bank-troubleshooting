@@ -8,7 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @RestController
 @RequestMapping("/journal-entries")
@@ -58,8 +63,13 @@ public class JournalEntryController {
         return ResponseEntity.created(locationOfAccount).build();
     }
 
-    @GetMapping()
-    public ResponseEntity<Iterable<JournalEntry>> findAll() {
-        return ResponseEntity.ok(journalEntryRepository.findAll());
+    @GetMapping
+    public ResponseEntity<List<JournalEntry>> findAll(Pageable pageable) {
+        Page<JournalEntry> page = journalEntryRepository.findAll(
+                PageRequest.of(
+                        pageable.getPageNumber(),
+                        pageable.getPageSize()
+                ));
+        return ResponseEntity.ok(page.getContent());
     }
 }

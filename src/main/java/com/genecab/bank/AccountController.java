@@ -44,7 +44,7 @@ public class AccountController {
                 .toUri();
         return ResponseEntity.created(locationOfAccount).build();
     }
-    
+
     @GetMapping
     public ResponseEntity<List<Account>> findAll(Pageable pageable) {
         Page<Account> page = accountRepository.findAll(
