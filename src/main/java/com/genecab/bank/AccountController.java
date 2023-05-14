@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/accounts")
@@ -25,8 +26,8 @@ public class AccountController {
         this.accountRepository = accountRepository;
     }
     @GetMapping("/{requestedId}")
-    public ResponseEntity<Account> findById(@PathVariable Long requestedId) throws JsonProcessingException {
-        Optional<Account> accountOptional = accountRepository.findById(requestedId);
+    public ResponseEntity<Account> findById(@PathVariable Long requestedId, Principal principal) throws JsonProcessingException {
+        Optional<Account> accountOptional = Optional.ofNullable(accountRepository.findByIdAndOwner(requestedId, principal.getName()));
 
         if (accountOptional.isPresent()) {
             return ResponseEntity.ok(accountOptional.get());
@@ -46,8 +47,8 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Account>> findAll(Pageable pageable) {
-        Page<Account> page = accountRepository.findAll(
+    public ResponseEntity<List<Account>> findAll(Pageable pageable, Principal principal) {
+        Page<Account> page = accountRepository.findByOwner(principal.getName(),
                 PageRequest.of(
                         pageable.getPageNumber(),
                         pageable.getPageSize(),

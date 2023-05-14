@@ -137,24 +137,22 @@ class BankApplicationTests {
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         int cashCardCount = documentContext.read("$.length()");
-        assertThat(cashCardCount).isEqualTo(6);
+        assertThat(cashCardCount).isEqualTo(5);
 
         JSONArray ids = documentContext.read("$..id");
-        assertThat(ids).containsExactlyInAnyOrder(1001, 1002, 1003, 1004, 1005, 1006);
+        assertThat(ids).containsExactlyInAnyOrder(1001, 1002, 1003, 1005, 1006);
 
         JSONArray names = documentContext.read("$..name");
         assertThat(names).containsExactlyInAnyOrder(
                 "Jeremy                                                                                              ",
                 "Emma                                                                                                ",
                 "Sally                                                                                               ",
-                "John                                                                                                ",
                 "Emma                                                                                                ",
                 "Emma                                                                                                "
         );
 
         JSONArray types = documentContext.read("$..type");
         assertThat(types).containsExactlyInAnyOrder(
-                "SAVINGS                                           ",
                 "SAVINGS                                           ",
                 "SAVINGS                                           ",
                 "SAVINGS                                           ",
@@ -261,14 +259,13 @@ class BankApplicationTests {
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         JSONArray page = documentContext.read("$[*]");
-        assertThat(page.size()).isEqualTo(6);
+        assertThat(page.size()).isEqualTo(5);
 
         JSONArray names = documentContext.read("$..name");
         assertThat(names).containsExactly("Emma                                                                                                ",
                 "Emma                                                                                                ",
                 "Emma                                                                                                ",
                 "Jeremy                                                                                              ",
-                "John                                                                                                ",
                 "Sally                                                                                               ");
     }
 
@@ -305,5 +302,13 @@ class BankApplicationTests {
                 .withBasicAuth("hank-owns-no-cards", "qrs456")
                 .getForEntity("/accounts/1001", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    void shouldNotAllowAccessToAccountsTheyDoNotOwn() {
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/accounts/1004", String.class); // kumar2's data
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }
