@@ -39,4 +39,9 @@ public class AccountController {
                 .toUri();
         return ResponseEntity.created(locationOfAccount).build();
     }
+
+    @GetMapping()
+    public ResponseEntity<Iterable<Account>> findAll() {
+        return ResponseEntity.ok(accountRepository.findAll());
+    }
 }

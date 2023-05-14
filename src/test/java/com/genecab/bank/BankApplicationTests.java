@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.Optional;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import net.minidev.json.JSONArray;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
@@ -106,5 +107,37 @@ class BankApplicationTests {
         assertThat(instant).isEqualTo(1682675287000L);
         assertThat(amount.trim()).isEqualTo("150.00");
         assertThat(balance).isEqualTo("250.00");
+    }
+
+    @Test
+    void shouldReturnAllAccountsWhenListIsRequested() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/accounts", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        int cashCardCount = documentContext.read("$.length()");
+        assertThat(cashCardCount).isEqualTo(6);
+
+        JSONArray ids = documentContext.read("$..id");
+        assertThat(ids).containsExactlyInAnyOrder(1001, 1002, 1003, 1004, 1005, 1006);
+
+        JSONArray names = documentContext.read("$..name");
+        assertThat(names).containsExactlyInAnyOrder(
+                "Jeremy                                                                                              ",
+                "Emma                                                                                                ",
+                "Sally                                                                                               ",
+                "John                                                                                                ",
+                "Jeremy                                                                                              ",
+                "Jeremy                                                                                              "
+        );
+
+        JSONArray types = documentContext.read("$..type");
+        assertThat(types).containsExactlyInAnyOrder(
+                "SAVINGS                                           ",
+                "SAVINGS                                           ",
+                "SAVINGS                                           ",
+                "SAVINGS                                           ",
+                "MONEY_MARKET                                      ",
+                "CHECKING                                          ");
     }
 }
