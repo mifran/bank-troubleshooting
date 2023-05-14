@@ -51,7 +51,7 @@ public class AccountController {
                 PageRequest.of(
                         pageable.getPageNumber(),
                         pageable.getPageSize(),
-                        pageable.getSort()
+                        pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"))
                 ));
         return ResponseEntity.ok(page.getContent());
     }

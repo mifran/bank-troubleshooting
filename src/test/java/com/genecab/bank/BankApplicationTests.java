@@ -223,4 +223,35 @@ class BankApplicationTests {
         int id = documentContext.read("$[0].id");
         assertThat(id).isEqualTo(13897);
     }
+
+    @Test
+    void shouldReturnASortedPageOfAccountsWithNoParametersAndUseDefaultValues() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/accounts", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        JSONArray page = documentContext.read("$[*]");
+        assertThat(page.size()).isEqualTo(6);
+
+        JSONArray names = documentContext.read("$..name");
+        assertThat(names).containsExactly("Emma                                                                                                ",
+                "Emma                                                                                                ",
+                "Emma                                                                                                ",
+                "Jeremy                                                                                              ",
+                "John                                                                                                ",
+                "Sally                                                                                               ");
+    }
+
+    @Test
+    void shouldReturnASortedPageOfJournalEntriesWithNoParametersAndUseDefaultValues() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        JSONArray page = documentContext.read("$[*]");
+        assertThat(page.size()).isEqualTo(6);
+
+        JSONArray id = documentContext.read("$..id");
+        assertThat(id).containsExactly(13897, 13896,13895,13894,13893,13892);
+    }
 }

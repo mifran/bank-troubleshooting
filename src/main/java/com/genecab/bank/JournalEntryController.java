@@ -69,7 +69,7 @@ public class JournalEntryController {
                 PageRequest.of(
                         pageable.getPageNumber(),
                         pageable.getPageSize(),
-                        pageable.getSort()
+                        pageable.getSortOr(Sort.by(Sort.Direction.DESC, "id"))
                 ));
         return ResponseEntity.ok(page.getContent());
     }
