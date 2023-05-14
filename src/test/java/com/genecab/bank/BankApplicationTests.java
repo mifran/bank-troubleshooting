@@ -174,4 +174,14 @@ class BankApplicationTests {
                 "185.00              ",
                 "186.00              ");
     }
+
+    @Test
+    void shouldReturnAPageOfAccounts() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/accounts?page=0&size=1", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        JSONArray page = documentContext.read("$[*]");
+        assertThat(page.size()).isEqualTo(1);
+    }
 }
