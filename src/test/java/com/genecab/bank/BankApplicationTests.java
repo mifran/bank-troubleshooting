@@ -16,13 +16,13 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import net.minidev.json.JSONArray;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 class BankApplicationTests {
 
     @Autowired
     TestRestTemplate restTemplate;
 
     @Test
+    @DirtiesContext
     void shouldReturnAnAccountWhenDataIsSaved() {
         ResponseEntity<String> response = restTemplate.getForEntity("/accounts/1001", String.class);
 
@@ -43,6 +43,7 @@ class BankApplicationTests {
     }
 
     @Test
+    @DirtiesContext
     void shouldReturnAJournalEntryWhenDataIsSaved() {
         ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries/13892", String.class);
 
@@ -63,6 +64,7 @@ class BankApplicationTests {
     }
 
     @Test
+    @DirtiesContext
     void shouldCreateANewAccount() {
         Account newAccount = new Account(null, "John Savings", "SAVINGS");
         ResponseEntity<Void> createResponse = restTemplate.postForEntity("/accounts", newAccount, Void.class);
@@ -83,6 +85,7 @@ class BankApplicationTests {
     }
 
     @Test
+    @DirtiesContext
     void shouldCreateANewJournalEntry() {
         JournalEntry newJournalEntry = new JournalEntry(null, 1001L, "Deposit", 1682675287000L, "150.00", null);
         ResponseEntity<Void> createResponse = restTemplate.postForEntity("/journal-entries", newJournalEntry, Void.class);
@@ -170,13 +173,5 @@ class BankApplicationTests {
                 "105.00              ",
                 "185.00              ",
                 "186.00              ");
-
-//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13892, 1001, 'Beginning Balance', 16765, '0.00', '100.00');
-//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13893, 1002, 'Beginning Balance', 16765, '0.00', '0.00');
-//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13894, 1002, 'Deposit', 16765, '125.00', '125.00');
-//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13895, 1002, 'Withdrawal', 16765, '-20.00', '105.00');
-//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13896, 1002, 'Deposit', 16765, '80.00', '185.00');
-//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13897, 1002, 'Interest payment', 16765, '1.00', '186.00');
-
     }
 }
