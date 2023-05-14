@@ -27,17 +27,17 @@ public class AccountJsonTest {
 	@BeforeEach
 	void setUp() {
 		accounts = Arrays.array(
-				new Account(1001L, "Jeremy", "SAVINGS"),
-				new Account(1002L, "Emma", "SAVINGS"),
-				new Account(1003L, "Sally", "SAVINGS"),
-				new Account(1004L, "John", "SAVINGS"),
-				new Account(1005L, "Jeremy", "MONEY_MARKET"),
-				new Account(1006L, "Jeremy", "CHECKING"));
+				new Account(1001L, "Jeremy", "SAVINGS", "sarah1"),
+				new Account(1002L, "Emma", "SAVINGS", "sarah1"),
+				new Account(1003L, "Sally", "SAVINGS", "sarah1"),
+				new Account(1004L, "John", "SAVINGS", "sarah1"),
+				new Account(1005L, "Jeremy", "MONEY_MARKET", "sarah1"),
+				new Account(1006L, "Jeremy", "CHECKING", "sarah1"));
 	}
 
 	@Test
 	public void accountSerializationTest() throws IOException {
-		Account account = new Account(1001L, "Jeremy", "SAVINGS");
+		Account account = new Account(1001L, "Jeremy", "SAVINGS", "sarah1");
 		assertThat(json.write(account)).isStrictlyEqualToJson("single-account.json");
 		assertThat(json.write(account)).hasJsonPathNumberValue("@.id");
 		assertThat(json.write(account)).extractingJsonPathNumberValue("@.id").isEqualTo(1001);
@@ -56,12 +56,12 @@ public class AccountJsonTest {
 	void accountListDeserializationTest() throws IOException {
 		String expected="""
          [
-            { "id": 1001, "name": "Jeremy", "type": "SAVINGS" },
-            { "id": 1002, "name": "Emma", "type": "SAVINGS" },
-            { "id": 1003, "name": "Sally", "type": "SAVINGS" },
-            { "id": 1004, "name": "John", "type": "SAVINGS" },
-            { "id": 1005, "name": "Jeremy", "type": "MONEY_MARKET" },
-            { "id": 1006, "name": "Jeremy", "type": "CHECKING" }
+            { "id": 1001, "name": "Jeremy", "type": "SAVINGS", "owner": "sarah1" },
+            { "id": 1002, "name": "Emma", "type": "SAVINGS", "owner": "sarah1" },
+            { "id": 1003, "name": "Sally", "type": "SAVINGS", "owner": "sarah1" },
+            { "id": 1004, "name": "John", "type": "SAVINGS", "owner": "sarah1" },
+            { "id": 1005, "name": "Jeremy", "type": "MONEY_MARKET", "owner": "sarah1" },
+            { "id": 1006, "name": "Jeremy", "type": "CHECKING", "owner": "sarah1" }
          ]
          """;
 		assertThat(jsonList.parse(expected)).isEqualTo(accounts);

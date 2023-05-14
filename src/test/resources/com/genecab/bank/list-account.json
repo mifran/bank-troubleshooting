@@ -2,31 +2,37 @@
 	{
 		"id": 1001,
 		"name": "Jeremy",
-		"type": "SAVINGS"
+		"type": "SAVINGS",
+		"owner": "sarah1"
 	},
 	{
 		"id": 1002,
 		"name": "Emma",
-		"type": "SAVINGS"
+		"type": "SAVINGS",
+		"owner": "sarah1"
 	},
 	{
 		"id": 1003,
 		"name": "Sally",
-		"type": "SAVINGS"
+		"type": "SAVINGS",
+		"owner": "sarah1"
 	},
 	{
 		"id": 1004,
 		"name": "John",
-		"type": "SAVINGS"
+		"type": "SAVINGS",
+		"owner": "sarah1"
 	},
 	{
 		"id": 1005,
 		"name": "Jeremy",
-		"type": "MONEY_MARKET"
+		"type": "MONEY_MARKET",
+		"owner": "sarah1"
 	},
 	{
 		"id": 1006,
 		"name": "Jeremy",
-		"type": "CHECKING"
+		"type": "CHECKING",
+		"owner": "sarah1"
 	}
 ]

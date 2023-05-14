@@ -1,5 +1,6 @@
 {
 	"id": 1001,
 	"name": "Jeremy",
-	"type": "SAVINGS"
+	"type": "SAVINGS",
+	"owner": "sarah1"
 }

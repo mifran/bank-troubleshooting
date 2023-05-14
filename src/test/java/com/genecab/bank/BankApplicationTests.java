@@ -66,7 +66,7 @@ class BankApplicationTests {
     @Test
     @DirtiesContext
     void shouldCreateANewAccount() {
-        Account newAccount = new Account(null, "John Savings", "SAVINGS");
+        Account newAccount = new Account(null, "John Savings", "SAVINGS", "sarah1");
         ResponseEntity<Void> createResponse = restTemplate.postForEntity("/accounts", newAccount, Void.class);
         assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
