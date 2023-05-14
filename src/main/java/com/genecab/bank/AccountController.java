@@ -37,8 +37,15 @@ public class AccountController {
     }
 
     @PostMapping
-    private ResponseEntity createAccount(@RequestBody Account newAccountRequest, UriComponentsBuilder ubc) {
-        Account savedCashCard = accountRepository.save(newAccountRequest);
+    private ResponseEntity createAccount(
+            @RequestBody Account newAccountRequest,
+            UriComponentsBuilder ubc,
+            Principal principal) {
+        Account accountWithOwner = new Account(null,
+                newAccountRequest.name(),
+                newAccountRequest.type(),
+                principal.getName());
+        Account savedCashCard = accountRepository.save(accountWithOwner);
         URI locationOfAccount = ubc
                 .path("accounts/{id}")
                 .buildAndExpand(savedCashCard.id())
