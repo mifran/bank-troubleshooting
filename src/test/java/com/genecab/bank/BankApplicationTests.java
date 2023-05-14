@@ -24,7 +24,9 @@ class BankApplicationTests {
     @Test
     @DirtiesContext
     void shouldReturnAnAccountWhenDataIsSaved() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/accounts/1001", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/accounts/1001", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -36,7 +38,9 @@ class BankApplicationTests {
 
     @Test
     void shouldNotReturnAnAccountWithAnUnknownId() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/accounts/123453429870932", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/accounts/123453429870932", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isBlank();
@@ -45,7 +49,9 @@ class BankApplicationTests {
     @Test
     @DirtiesContext
     void shouldReturnAJournalEntryWhenDataIsSaved() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries/13892", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/journal-entries/13892", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -57,7 +63,9 @@ class BankApplicationTests {
 
     @Test
     void shouldNotReturnAJournalEntryWithAnUnknownId() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries/123453429870932", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/journal-entries/123453429870932", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isBlank();
@@ -67,11 +75,15 @@ class BankApplicationTests {
     @DirtiesContext
     void shouldCreateANewAccount() {
         Account newAccount = new Account(null, "John Savings", "SAVINGS", "sarah1");
-        ResponseEntity<Void> createResponse = restTemplate.postForEntity("/accounts", newAccount, Void.class);
+        ResponseEntity<Void> createResponse = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .postForEntity("/accounts", newAccount, Void.class);
         assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         URI locationOfNewAccount = createResponse.getHeaders().getLocation();
-        ResponseEntity<String> getResponse = restTemplate.getForEntity(locationOfNewAccount, String.class);
+        ResponseEntity<String> getResponse = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity(locationOfNewAccount, String.class);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
@@ -88,11 +100,15 @@ class BankApplicationTests {
     @DirtiesContext
     void shouldCreateANewJournalEntry() {
         JournalEntry newJournalEntry = new JournalEntry(null, 1001L, "Deposit", 1682675287000L, "150.00", null);
-        ResponseEntity<Void> createResponse = restTemplate.postForEntity("/journal-entries", newJournalEntry, Void.class);
+        ResponseEntity<Void> createResponse = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .postForEntity("/journal-entries", newJournalEntry, Void.class);
         assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         URI locationOfNewAccount = createResponse.getHeaders().getLocation();
-        ResponseEntity<String> getResponse = restTemplate.getForEntity(locationOfNewAccount, String.class);
+        ResponseEntity<String> getResponse = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity(locationOfNewAccount, String.class);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
@@ -114,7 +130,9 @@ class BankApplicationTests {
 
     @Test
     void shouldReturnAllAccountsWhenListIsRequested() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/accounts", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/accounts", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -146,7 +164,9 @@ class BankApplicationTests {
 
     @Test
     void shouldReturnAllJournalEntriesWhenListIsRequested() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/journal-entries", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -177,7 +197,9 @@ class BankApplicationTests {
 
     @Test
     void shouldReturnAPageOfAccounts() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/accounts?page=0&size=1", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/accounts?page=0&size=1", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -187,7 +209,9 @@ class BankApplicationTests {
 
     @Test
     void shouldReturnAPageOfJournalEntries() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries?page=0&size=1", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/journal-entries?page=0&size=1", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -197,7 +221,9 @@ class BankApplicationTests {
 
     @Test
     void shouldReturnASortedPageOfAccounts() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/accounts?page=0&size=1&sort=name,type", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/accounts?page=0&size=1&sort=name,type", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -213,7 +239,9 @@ class BankApplicationTests {
 
     @Test
     void shouldReturnASortedPageOfJournalEntries() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries?page=0&size=1&sort=id,desc", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/journal-entries?page=0&size=1&sort=id,desc", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -226,7 +254,9 @@ class BankApplicationTests {
 
     @Test
     void shouldReturnASortedPageOfAccountsWithNoParametersAndUseDefaultValues() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/accounts", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/accounts", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -244,7 +274,9 @@ class BankApplicationTests {
 
     @Test
     void shouldReturnASortedPageOfJournalEntriesWithNoParametersAndUseDefaultValues() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries", String.class);
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/journal-entries", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -254,4 +286,17 @@ class BankApplicationTests {
         JSONArray id = documentContext.read("$..id");
         assertThat(id).containsExactly(13897, 13896,13895,13894,13893,13892);
     }
+    @Test
+    void shouldNotReturnAnAccountWhenUsingBadCredentials() {
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("BAD-USER", "abc123")
+                .getForEntity("/accounts/1001", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+
+        response = restTemplate
+                .withBasicAuth("sarah1", "BAD-PASSWORD")
+                .getForEntity("/accounts/1001", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
 }
