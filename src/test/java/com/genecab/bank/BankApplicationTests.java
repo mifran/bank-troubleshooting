@@ -299,4 +299,11 @@ class BankApplicationTests {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
+    @Test
+    void shouldRejectUsersWhoAreNotCardOwners() {
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("hank-owns-no-cards", "qrs456")
+                .getForEntity("/accounts/1001", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
 }
