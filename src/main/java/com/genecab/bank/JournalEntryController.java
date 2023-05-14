@@ -57,4 +57,9 @@ public class JournalEntryController {
                 .toUri();
         return ResponseEntity.created(locationOfAccount).build();
     }
+
+    @GetMapping()
+    public ResponseEntity<Iterable<JournalEntry>> findAll() {
+        return ResponseEntity.ok(journalEntryRepository.findAll());
+    }
 }

@@ -140,4 +140,43 @@ class BankApplicationTests {
                 "MONEY_MARKET                                      ",
                 "CHECKING                                          ");
     }
+
+    @Test
+    void shouldReturnAllJournalEntriesWhenListIsRequested() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/journal-entries", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        int cashCardCount = documentContext.read("$.length()");
+        assertThat(cashCardCount).isEqualTo(6);
+
+        JSONArray ids = documentContext.read("$..id");
+        assertThat(ids).containsExactlyInAnyOrder(13892, 13893, 13894, 13895, 13896, 13897);
+
+        JSONArray descriptions = documentContext.read("$..description");
+        assertThat(descriptions).containsExactlyInAnyOrder(
+                "Beginning Balance                                                                                   ",
+                "Beginning Balance                                                                                   ",
+                "Deposit                                                                                             ",
+                "Withdrawal                                                                                          ",
+                "Deposit                                                                                             ",
+                "Interest payment                                                                                    ");
+
+
+        JSONArray balances = documentContext.read("$..balance");
+        assertThat(balances).containsExactlyInAnyOrder("100.00              ",
+                "0.00                ",
+                "125.00              ",
+                "105.00              ",
+                "185.00              ",
+                "186.00              ");
+
+//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13892, 1001, 'Beginning Balance', 16765, '0.00', '100.00');
+//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13893, 1002, 'Beginning Balance', 16765, '0.00', '0.00');
+//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13894, 1002, 'Deposit', 16765, '125.00', '125.00');
+//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13895, 1002, 'Withdrawal', 16765, '-20.00', '105.00');
+//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13896, 1002, 'Deposit', 16765, '80.00', '185.00');
+//        INSERT INTO JOURNAL_ENTRY(ID, ACCOUNT, DESCRIPTION, INSTANT, AMOUNT, BALANCE) VALUES (13897, 1002, 'Interest payment', 16765, '1.00', '186.00');
+
+    }
 }
