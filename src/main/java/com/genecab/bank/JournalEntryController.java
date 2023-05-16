@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -24,29 +25,52 @@ public class JournalEntryController {
 
     private JournalEntryRepository journalEntryRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     public JournalEntryController(JournalEntryRepository journalEntryRepository) {
         this.journalEntryRepository = journalEntryRepository;
     }
 
     @GetMapping("/{requestedId}")
-    public ResponseEntity<JournalEntry> findById(@PathVariable Long requestedId) throws JsonProcessingException {
+    public ResponseEntity<JournalEntry> findById(@PathVariable Long requestedId, Principal principal) throws JsonProcessingException {
         Optional<JournalEntry> journalEntry = journalEntryRepository.findById(requestedId);
-
         if (journalEntry.isPresent()) {
-            return ResponseEntity.ok(journalEntry.get());
+            Optional<Account> account = getPresentAccountIfPrincipalHasAccessToJournalEntry(journalEntry.orElse(null), principal);
+            if (account.isPresent()) {
+                return ResponseEntity.ok(journalEntry.get());
+            } else {
+                // principal does not have access to this JournalEntry
+                return ResponseEntity.notFound().build();
+            }
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
+    private Optional<Account> getPresentAccountIfPrincipalHasAccessToJournalEntry(JournalEntry journalEntry, Principal principal) {
+        Long accountId = journalEntry.account();
+        Optional<Account> account = accountRepository.findById(accountId);
+        String principalName = principal.getName();
+        String accountOwner = account.map(Account::owner).orElse(null);
+        boolean b = principalName.trim().equals(accountOwner.trim());
+        if (b) {
+            return account;
+        } else {
+            return Optional.empty();
+        }
+    }
+
     @PostMapping
-    private ResponseEntity createAccount(@RequestBody JournalEntry newJournalEntryRequest, UriComponentsBuilder ubc) {
-        String balanceStr = journalEntryRepository
-                .getBalance(newJournalEntryRequest.account())
-                .get(0)
-                .trim();
+    private ResponseEntity createJournalEntry(@RequestBody JournalEntry newJournalEntryRequest, UriComponentsBuilder ubc, Principal principal) {
+        Optional<Account> account = getPresentAccountIfPrincipalHasAccessToJournalEntry(newJournalEntryRequest, principal);
+        if (!account.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+        BigDecimal balance = new JournalEntryHelper(this.journalEntryRepository)
+                .getBalance(newJournalEntryRequest.account());
         String amountStr = newJournalEntryRequest.amount();
-        BigDecimal newBalance = new BigDecimal(balanceStr).add(new BigDecimal(amountStr));
+        BigDecimal newBalance = balance.add(new BigDecimal(amountStr));
         String newBalanceStr = String.valueOf(newBalance);
         JournalEntry journalEntryToSave = new JournalEntry(
                 newJournalEntryRequest.id(),

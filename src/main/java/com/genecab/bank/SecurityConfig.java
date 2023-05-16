@@ -18,7 +18,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests()
                 .requestMatchers("/accounts/**", "/journal-entries/**")
-                .hasRole("CARD-OWNER")
+                .hasRole("ACCOUNT-OWNER")
                 .and()
                 .csrf().disable()
                 .httpBasic();
@@ -36,7 +36,7 @@ public class SecurityConfig {
         UserDetails sarah = users
                 .username("sarah1")
                 .password(passwordEncoder.encode("abc123"))
-                .roles("CARD-OWNER")
+                .roles("ACCOUNT-OWNER")
                 .build();
         UserDetails hankOwnsNoCards = users
                 .username("hank-owns-no-cards")

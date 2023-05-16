@@ -51,13 +51,13 @@ class BankApplicationTests {
     void shouldReturnAJournalEntryWhenDataIsSaved() {
         ResponseEntity<String> response = restTemplate
                 .withBasicAuth("sarah1", "abc123")
-                .getForEntity("/journal-entries/13892", String.class);
+                .getForEntity("/journal-entries/13893", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         Number id = documentContext.read("$.id");
-        assertThat(id).isEqualTo(13892);
+        assertThat(id).isEqualTo(13893);
         assertThat(id).isNotNull();
     }
 
@@ -99,7 +99,7 @@ class BankApplicationTests {
     @Test
     @DirtiesContext
     void shouldCreateANewJournalEntry() {
-        JournalEntry newJournalEntry = new JournalEntry(null, 1001L, "Deposit", 1682675287000L, "150.00", null);
+        JournalEntry newJournalEntry = new JournalEntry(null, 1002L, "Deposit", 1682675287000L, "150.00", null);
         ResponseEntity<Void> createResponse = restTemplate
                 .withBasicAuth("sarah1", "abc123")
                 .postForEntity("/journal-entries", newJournalEntry, Void.class);
@@ -121,11 +121,21 @@ class BankApplicationTests {
         String balance = Optional.ofNullable(balanceOpt).map(Optional::get).orElse("").trim();
 
         assertThat(id).isNotNull();
-        assertThat(account).isEqualTo(1001);
+        assertThat(account).isEqualTo(1002);
         assertThat(description.trim()).isEqualTo("Deposit");
         assertThat(instant).isEqualTo(1682675287000L);
         assertThat(amount.trim()).isEqualTo("150.00");
-        assertThat(balance).isEqualTo("250.00");
+        assertThat(balance).isEqualTo("336.00");
+    }
+
+    @Test
+    @DirtiesContext
+    void shouldReturnBadRequestIfPrincipalDoesNotHaveAccessToAccountWhenCreatingJournalEntry() {
+        JournalEntry newJournalEntry = new JournalEntry(null, 1004L, "Deposit", 1682675287000L, "150.00", null);
+        ResponseEntity<Void> createResponse = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .postForEntity("/journal-entries", newJournalEntry, Void.class);
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -309,6 +319,14 @@ class BankApplicationTests {
         ResponseEntity<String> response = restTemplate
                 .withBasicAuth("sarah1", "abc123")
                 .getForEntity("/accounts/1004", String.class); // kumar2's data
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void shouldNotAllowAccessToASingleJournalEntryTheyDoNotOwn() {
+        ResponseEntity<String> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/journal-entries/13892", String.class); // kumar2's data
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }
