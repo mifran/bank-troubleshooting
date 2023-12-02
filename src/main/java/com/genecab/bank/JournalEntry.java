@@ -1,13 +1,11 @@
 package com.genecab.bank;
 
 import jakarta.persistence.Entity;
-import org.springframework.data.annotation.Id;
 
 @Entity
 public class JournalEntry {
-    // @Id Long id, Long account, String description, Long instant, String amount, String balance
 
-    @Id
+    @jakarta.persistence.Id
     private Long id;
     private Long account;
     private String description;
@@ -69,5 +67,9 @@ public class JournalEntry {
 
     public void setBalance(String balance) {
         this.balance = balance;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

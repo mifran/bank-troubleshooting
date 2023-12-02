@@ -1,12 +1,11 @@
 package com.genecab.bank;
 
 import jakarta.persistence.Entity;
-import org.springframework.data.annotation.Id;
 
 @Entity
 public class Account {
 
-    @Id
+    @jakarta.persistence.Id
     private Long id;
     private String name;
     private String type;
