@@ -42,13 +42,13 @@ public class AccountController {
             UriComponentsBuilder ubc,
             Principal principal) {
         Account accountWithOwner = new Account(null,
-                newAccountRequest.name(),
-                newAccountRequest.type(),
+                newAccountRequest.getName(),
+                newAccountRequest.getType(),
                 principal.getName());
         Account savedCashCard = accountRepository.save(accountWithOwner);
         URI locationOfAccount = ubc
                 .path("accounts/{id}")
-                .buildAndExpand(savedCashCard.id())
+                .buildAndExpand(savedCashCard.getId())
                 .toUri();
         return ResponseEntity.created(locationOfAccount).build();
     }
