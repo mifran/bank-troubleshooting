@@ -74,7 +74,7 @@ class BankApplicationTests {
     @Test
     @DirtiesContext
     void shouldCreateANewAccount() {
-        Account newAccount = new Account(null, "John Savings", "SAVINGS", null);
+        Account newAccount = new Account(123446L, "John Savings", "SAVINGS", null);
         ResponseEntity<Void> createResponse = restTemplate
                 .withBasicAuth("sarah1", "abc123")
                 .postForEntity("/accounts", newAccount, Void.class);
@@ -99,10 +99,11 @@ class BankApplicationTests {
     @Test
     @DirtiesContext
     void shouldCreateANewJournalEntry() {
-        JournalEntry newJournalEntry = new JournalEntry(null, 1002L, "Deposit", 1682675287000L, "150.00", null);
+        JournalEntry newJournalEntry = new JournalEntry(3240987L, 1002L, "Deposit", 1682675287000L, "150.00", null);
         ResponseEntity<Void> createResponse = restTemplate
                 .withBasicAuth("sarah1", "abc123")
                 .postForEntity("/journal-entries", newJournalEntry, Void.class);
+        System.out.println("Status code:" + createResponse.getStatusCode());
         assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         URI locationOfNewAccount = createResponse.getHeaders().getLocation();
@@ -147,14 +148,15 @@ class BankApplicationTests {
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         int cashCardCount = documentContext.read("$.length()");
-        assertThat(cashCardCount).isEqualTo(5);
+        assertThat(cashCardCount).isEqualTo(6);
 
         JSONArray ids = documentContext.read("$..id");
-        assertThat(ids).containsExactlyInAnyOrder(1001, 1002, 1003, 1005, 1006);
+        assertThat(ids).containsExactlyInAnyOrder(123446, 1001, 1002, 1003, 1005, 1006);
 
         JSONArray names = documentContext.read("$..name");
         assertThat(names).containsExactlyInAnyOrder(
                 "Jeremy                                                                                              ",
+                "John Savings                                                                                        ",
                 "Emma                                                                                                ",
                 "Sally                                                                                               ",
                 "Emma                                                                                                ",
@@ -167,7 +169,8 @@ class BankApplicationTests {
                 "SAVINGS                                           ",
                 "SAVINGS                                           ",
                 "MONEY_MARKET                                      ",
-                "CHECKING                                          ");
+                "CHECKING                                          ",
+                "SAVINGS                                           ");
     }
 
     @Test
@@ -179,10 +182,10 @@ class BankApplicationTests {
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         int cashCardCount = documentContext.read("$.length()");
-        assertThat(cashCardCount).isEqualTo(6);
+        assertThat(cashCardCount).isEqualTo(7);
 
         JSONArray ids = documentContext.read("$..id");
-        assertThat(ids).containsExactlyInAnyOrder(13892, 13893, 13894, 13895, 13896, 13897);
+        assertThat(ids).containsExactlyInAnyOrder(13892, 13893, 13894, 13895, 13896, 13897, 3240987);
 
         JSONArray descriptions = documentContext.read("$..description");
         assertThat(descriptions).containsExactlyInAnyOrder(
@@ -191,7 +194,9 @@ class BankApplicationTests {
                 "Deposit                                                                                             ",
                 "Withdrawal                                                                                          ",
                 "Deposit                                                                                             ",
-                "Interest payment                                                                                    ");
+                "Interest payment                                                                                    ",
+                "Deposit                                                                                             "
+                );
 
 
         JSONArray balances = documentContext.read("$..balance");
@@ -200,7 +205,8 @@ class BankApplicationTests {
                 "125.00              ",
                 "105.00              ",
                 "185.00              ",
-                "186.00              ");
+                "186.00              ",
+                "336.00              ");
     }
 
     @Test
@@ -257,7 +263,7 @@ class BankApplicationTests {
         assertThat(read.size()).isEqualTo(1);
 
         int id = documentContext.read("$[0].id");
-        assertThat(id).isEqualTo(13897);
+        assertThat(id).isEqualTo(3240987);
     }
 
     @Test
@@ -269,13 +275,14 @@ class BankApplicationTests {
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         JSONArray page = documentContext.read("$[*]");
-        assertThat(page.size()).isEqualTo(5);
+        assertThat(page.size()).isEqualTo(6);
 
         JSONArray names = documentContext.read("$..name");
         assertThat(names).containsExactly("Emma                                                                                                ",
                 "Emma                                                                                                ",
                 "Emma                                                                                                ",
                 "Jeremy                                                                                              ",
+                "John Savings                                                                                        ",
                 "Sally                                                                                               ");
     }
 
@@ -288,10 +295,10 @@ class BankApplicationTests {
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         JSONArray page = documentContext.read("$[*]");
-        assertThat(page.size()).isEqualTo(6);
+        assertThat(page.size()).isEqualTo(7);
 
         JSONArray id = documentContext.read("$..id");
-        assertThat(id).containsExactly(13897, 13896,13895,13894,13893,13892);
+        assertThat(id).containsExactly(3240987, 13897, 13896,13895,13894,13893,13892);
     }
     @Test
     void shouldNotReturnAnAccountWhenUsingBadCredentials() {

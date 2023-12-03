@@ -41,7 +41,7 @@ public class AccountController {
             @RequestBody Account newAccountRequest,
             UriComponentsBuilder ubc,
             Principal principal) {
-        Account accountWithOwner = new Account(null,
+        Account accountWithOwner = new Account(newAccountRequest.getId(),
                 newAccountRequest.getName(),
                 newAccountRequest.getType(),
                 principal.getName());
