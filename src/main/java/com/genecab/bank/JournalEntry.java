@@ -29,6 +29,10 @@ public class JournalEntry {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getAccount() {
         return account;
     }
@@ -67,9 +71,5 @@ public class JournalEntry {
 
     public void setBalance(String balance) {
         this.balance = balance;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }
