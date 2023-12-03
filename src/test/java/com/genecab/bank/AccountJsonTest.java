@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 
-
 @ExtendWith(SpringExtension.class)
 @JsonTest
 public class AccountJsonTest {
