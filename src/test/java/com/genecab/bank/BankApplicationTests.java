@@ -14,6 +14,8 @@ import java.util.Optional;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import net.minidev.json.JSONArray;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BankApplicationTests {
@@ -334,6 +336,47 @@ class BankApplicationTests {
         ResponseEntity<String> response = restTemplate
                 .withBasicAuth("sarah1", "abc123")
                 .getForEntity("/journal-entries/13892", String.class); // kumar2's data
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DirtiesContext
+    void shouldUpdateAnExistingAccount() {
+        Account accountUpdate = new Account(1001L, "Jeremy", "CHECKING", "sarah1");
+        HttpEntity<Account> request = new HttpEntity<>(accountUpdate);
+        ResponseEntity<Void> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .exchange("/accounts/1001", HttpMethod.PUT, request, Void.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        ResponseEntity<String> getResponse = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .getForEntity("/accounts/1001", String.class);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
+        Number id = documentContext.read("$.id");
+        String type = documentContext.read("$.type");
+        assertThat(id).isEqualTo(1001);
+        assertThat(type).isEqualTo("CHECKING                                          ");
+    }
+
+    @Test
+    void shouldNotUpdateAnAccountThatDoesNotExist() {
+        Account accountUpdate = new Account(1001345L, "Jeremy", "CHECKING", "sarah1");
+        HttpEntity<Account> request = new HttpEntity<>(accountUpdate);
+        ResponseEntity<Void> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .exchange("/accounts/99999345", HttpMethod.PUT, request, Void.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void shouldNotUpdateAnAccountThatIsOwnedBySomeoneElse() {
+        Account accountUpdate = new Account(1004L, "Jeremy", "CHECKING", "sarah1");
+        HttpEntity<Account> request = new HttpEntity<>(accountUpdate);
+        ResponseEntity<Void> response = restTemplate
+                .withBasicAuth("sarah1", "abc123")
+                .exchange("/accounts/1004", HttpMethod.PUT, request, Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }

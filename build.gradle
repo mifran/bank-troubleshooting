@@ -25,3 +25,10 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+test {
+	testLogging {
+		// Change to `true` for more verbose test output
+		showStandardStreams = true
+	}
+}

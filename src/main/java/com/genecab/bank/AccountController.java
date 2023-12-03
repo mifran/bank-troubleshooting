@@ -2,15 +2,12 @@ package com.genecab.bank;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.PostMapping;
 import java.net.URI;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +24,7 @@ public class AccountController {
     }
     @GetMapping("/{requestedId}")
     public ResponseEntity<Account> findById(@PathVariable Long requestedId, Principal principal) throws JsonProcessingException {
-        Optional<Account> accountOptional = Optional.ofNullable(accountRepository.findByIdAndOwner(requestedId, principal.getName()));
+        Optional<Account> accountOptional = Optional.ofNullable(findAccount(requestedId, principal));
 
         if (accountOptional.isPresent()) {
             return ResponseEntity.ok(accountOptional.get());
@@ -62,5 +59,20 @@ public class AccountController {
                         pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"))
                 ));
         return ResponseEntity.ok(page.getContent());
+    }
+
+    @PutMapping("/{requestedId}")
+    private ResponseEntity<Void> putCashCard(@PathVariable Long requestedId, @RequestBody Account accountUpdate, Principal principal) {
+        Account account = findAccount(requestedId, principal);
+        if (account != null) {
+            Account updatedAccount = new Account(account.getId(), accountUpdate.getName(), accountUpdate.getType(), principal.getName());
+            accountRepository.save(updatedAccount);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    private Account findAccount(Long requestedId, Principal principal) {
+        return accountRepository.findByIdAndOwner(requestedId, principal.getName());
     }
 }
