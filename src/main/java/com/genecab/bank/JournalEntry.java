@@ -2,7 +2,7 @@ package com.genecab.bank;
 
 import jakarta.persistence.Entity;
 
-@Entity
+@Entity(name="journal_entry")
 public class JournalEntry {
 
     @jakarta.persistence.Id

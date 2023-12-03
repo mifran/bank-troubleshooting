@@ -11,10 +11,10 @@ public class JournalEntryHelper {
     public JournalEntryHelper(JournalEntryRepository journalEntryRepository) {
         this.journalEntryRepository = journalEntryRepository;
     }
-//    BigDecimal getBalance(Long account) {
-//        List<String> ls = journalEntryRepository.getBalanceList(account);
-//        String balanceStr = ls.get(0).trim();
-//        return new BigDecimal(balanceStr);
-//    }
+    BigDecimal getBalance(Long account) {
+        List<String> ls = journalEntryRepository.getBalanceList(account);
+        String balanceStr = ls.get(0).trim();
+        return new BigDecimal(balanceStr);
+    }
 
 }

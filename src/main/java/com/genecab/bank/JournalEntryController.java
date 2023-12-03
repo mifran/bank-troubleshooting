@@ -62,30 +62,30 @@ public class JournalEntryController {
     }
 
     @PostMapping
-//    private ResponseEntity createJournalEntry(@RequestBody JournalEntry newJournalEntryRequest, UriComponentsBuilder ubc, Principal principal) {
-//        Optional<Account> account = getPresentAccountIfPrincipalHasAccessToJournalEntry(newJournalEntryRequest, principal);
-//        if (!account.isPresent()) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//        BigDecimal balance = new JournalEntryHelper(this.journalEntryRepository)
-//                .getBalance(newJournalEntryRequest.getAccount());
-//        String amountStr = newJournalEntryRequest.getAmount();
-//        BigDecimal newBalance = balance.add(new BigDecimal(amountStr));
-//        String newBalanceStr = String.valueOf(newBalance);
-//        JournalEntry journalEntryToSave = new JournalEntry(
-//                newJournalEntryRequest.getId(),
-//                newJournalEntryRequest.getAccount(),
-//                newJournalEntryRequest.getDescription(),
-//                newJournalEntryRequest.getInstant(),
-//                newJournalEntryRequest.getAmount(),
-//                newBalanceStr);
-//        JournalEntry savedJournalEntry = journalEntryRepository.save(journalEntryToSave);
-//        URI locationOfAccount = ubc
-//                .path("journal-entries/{id}")
-//                .buildAndExpand(savedJournalEntry.getId())
-//                .toUri();
-//        return ResponseEntity.created(locationOfAccount).build();
-//    }
+    private ResponseEntity createJournalEntry(@RequestBody JournalEntry newJournalEntryRequest, UriComponentsBuilder ubc, Principal principal) {
+        Optional<Account> account = getPresentAccountIfPrincipalHasAccessToJournalEntry(newJournalEntryRequest, principal);
+        if (!account.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+        BigDecimal balance = new JournalEntryHelper(this.journalEntryRepository)
+                .getBalance(newJournalEntryRequest.getAccount());
+        String amountStr = newJournalEntryRequest.getAmount();
+        BigDecimal newBalance = balance.add(new BigDecimal(amountStr));
+        String newBalanceStr = String.valueOf(newBalance);
+        JournalEntry journalEntryToSave = new JournalEntry(
+                newJournalEntryRequest.getId(),
+                newJournalEntryRequest.getAccount(),
+                newJournalEntryRequest.getDescription(),
+                newJournalEntryRequest.getInstant(),
+                newJournalEntryRequest.getAmount(),
+                newBalanceStr);
+        JournalEntry savedJournalEntry = journalEntryRepository.save(journalEntryToSave);
+        URI locationOfAccount = ubc
+                .path("journal-entries/{id}")
+                .buildAndExpand(savedJournalEntry.getId())
+                .toUri();
+        return ResponseEntity.created(locationOfAccount).build();
+    }
 
     @GetMapping
     public ResponseEntity<List<JournalEntry>> findAll(Pageable pageable) {

@@ -12,7 +12,8 @@ import java.util.List;
 @Repository
 public interface JournalEntryRepository extends CrudRepository<JournalEntry, Long>, PagingAndSortingRepository<JournalEntry, Long> {
 
-//    @Query("SELECT BALANCE FROM JOURNAL_ENTRY je where id= (SELECT max(id) FROM JOURNAL_ENTRY WHERE ACCOUNT = :account)")
-//    List<String> getBalanceList(@Param("account") Long account);
+    @Query(nativeQuery = true,
+           value = "SELECT balance FROM journal_entry je where id= (SELECT max(id) FROM journal_entry WHERE account = :account)")
+    List<String> getBalanceList(@Param("account") Long account);
 
 }
